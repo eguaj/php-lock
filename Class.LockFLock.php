@@ -6,7 +6,8 @@ class LockFLock
     private $lockfile = null;
 
     /**
-     * @param $lockfile The file to lock on (will be created if it does not exists)
+     * @param $lockfile string The file to lock on (will be created if it does not exists)
+     * @throws Exception
      */
     public function __construct($lockfile)
     {
@@ -15,6 +16,12 @@ class LockFLock
         if ($this->lock === false) {
             throw new Exception(sprintf("Error opening lockfile '%s'.", $this->lockfile));
         }
+    }
+
+    public function __destruct()
+    {
+        flock($this->lock, LOCK_UN);
+        fclose($this->lock);
     }
 
     /**

@@ -6,8 +6,9 @@ class LockPgLockTable
     private $conn = null;
 
     /**
-     * @param $dsn Postgresql connection string
-     * @param $table The name of the table to lock on (should exists prior usage)
+     * @param $dsn string Postgresql connection string
+     * @param $table string The name of the table to lock on (should exists prior usage)
+     * @throws Exception
      */
     public function __construct($dsn, $table)
     {
@@ -27,6 +28,11 @@ class LockPgLockTable
             pg_close($this->conn);
             throw new Exception(sprintf("Error beginning transaction: %s", $err));
         }
+    }
+
+    public function __destruct()
+    {
+        pg_close($this->conn);
     }
 
     /**
